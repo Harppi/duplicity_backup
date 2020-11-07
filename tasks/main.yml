@@ -1,0 +1,10 @@
+---
+# duplicity_backup/tasks/main.yml
+
+- block:
+  - import_tasks: prerequisites.yml
+    tags: duplicity_backup_prerequisites
+
+  - import_tasks: backup.yml
+    tags: duplicity_backup
+  tags: duplicity_backup
