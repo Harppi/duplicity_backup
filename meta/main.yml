@@ -1,0 +1,17 @@
+---
+# duplicity_backup/meta/main.yml
+
+galaxy_info:
+  author: 'Harppi'
+  description: 'Create and transfer encrypted backups to a remote server'
+  license: 'Proprietary'
+  min_ansible_version: '2.5'
+
+  platforms:
+    - name: Debian
+      versions:
+        - 10
+
+  galaxy_tags:
+    - duplicity_backup
+...
