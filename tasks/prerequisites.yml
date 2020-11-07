@@ -1,0 +1,36 @@
+---
+- name: Install pip3
+  apt:
+    name: "{{ item }}"
+    state: latest
+  loop:
+    - python3-venv
+    - python3-pip
+  tags: duplicity_backup_install_pip3
+
+- name: Install gettext
+  apt:
+    name: gettext
+    state: latest
+  tags: duplicity_backup_install_gettext
+
+- name: Install librsync-dev
+  apt:
+    name: librsync-dev
+    state: latest
+  tags: duplicity_backup_install_librsync_dev
+
+- name: Install duplicity
+  pip:
+    name: duplicity
+    state: latest
+    executable: pip3
+
+  tags: duplicity_backup_install_duplicity
+
+- name: Install haveged
+  apt:
+    name: haveged
+    state: latest
+  tags: duplicity_backup_install_haveged
+...
