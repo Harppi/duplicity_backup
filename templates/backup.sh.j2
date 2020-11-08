@@ -1,0 +1,48 @@
+#!/bin/bash
+
+# Exit on error
+set -e
+# Treat unset variables as an error when substituting
+set -u
+
+# Script configuration
+LOGFILE="/var/log/duplicity_backup.log"
+source "/home/harppi/.duplicity/.env_variables.conf"
+
+# Dropbox configuration
+DROPBOX_DIR="hyppytorni_backup"
+
+# Directories to backup
+DOCUMENTS="/home/harppi/documents/"
+MUSIC="/home/harppi/music/"
+PICTURES="/home/harppi/pictures/"
+
+# Backup
+duplicity \
+  --verbosity info \
+  --encrypt-sign-key="$GPG_KEY" \
+  --full-if-older-than 7D \
+  --log-file ${LOGFILE} \
+  --include=${DOCUMENTS} \
+  --include=${MUSIC} \
+  --include=${PICTURES} \
+  --exclude '**' / \
+  dpbx://${DROPBOX_DIR}
+
+# Remove files older than 14 days from Dropbox
+[[ $? = 0 ]] && { # if file transfer succeeds
+  duplicity \
+  --verbosity info \
+  --log-file ${LOGFILE} \
+  remove-older-than 14D --force dpbx://${DROPBOX_DIR}
+}
+
+# Cleanup failures
+duplicity \
+  --verbosity info \
+  --log-file ${LOGFILE} \
+  cleanup --force dpbx://${DROPBOX_DIR}
+
+unset GPG_KEY
+unset PASSPHRASE
+unset DROPBOX_ACCESS_TOKEN

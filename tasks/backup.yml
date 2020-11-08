@@ -1,0 +1,37 @@
+---
+- name: Create GPG keypair
+  script: templates/gpg.sh.j2
+  become: yes
+  become_user: harppi
+  when:
+    - duplicity_backup_create_gpg_keypair is defined
+    - duplicity_backup_create_gpg_keypair == "True"
+  tags: duplicity_backup_create_gpg_keypair
+
+- name: Create duplicity directory
+  file:
+    path: /home/harppi/.duplicity
+    state: directory
+    owner: harppi
+    group: harppi
+    mode: '0700'
+  tags: duplicity_backup_define_environment_variables
+
+- name: Define environment variables
+  template:
+    src: env_variables.conf.j2
+    dest: /home/harppi/.duplicity/.env_variables.conf
+    owner: harppi
+    group: harppi
+    mode: '0600'
+  tags: duplicity_backup_define_environment_variables
+
+- name: Deploy backup script
+  template:
+    src: backup.sh.j2
+    dest: /home/harppi/.duplicity/.backup.sh
+    owner: harppi
+    group: harppi
+    mode: '0700'
+  tags: duplicity_backup_deploy_backup_script
+...
