@@ -6,7 +6,7 @@ set -e
 set -u
 
 # Script configuration
-LOGFILE="/var/log/duplicity_backup.log"
+LOGFILE="/var/log/duplicity/duplicity_backup.log"
 source "/home/harppi/.duplicity/.env_variables.conf"
 
 # Dropbox configuration
@@ -43,6 +43,8 @@ duplicity \
   --log-file ${LOGFILE} \
   cleanup --force dpbx://${DROPBOX_DIR}
 
+unset DPBX_ACCESS_TOKEN
+unset DPBX_APP_KEY
+unset DPBC_APP_SECRET
 unset GPG_KEY
 unset PASSPHRASE
-unset DROPBOX_ACCESS_TOKEN
