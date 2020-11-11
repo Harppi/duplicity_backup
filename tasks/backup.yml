@@ -26,6 +26,15 @@
     mode: '0600'
   tags: duplicity_backup_define_environment_variables
 
+- name: Create log directory
+  file:
+    path: /var/log/duplicity
+    state: directory
+    owner: harppi
+    group: harppi
+    mode: '0700'
+  tags: duplicity_backup_create_log_directory
+
 - name: Deploy backup script
   template:
     src: backup.sh.j2
