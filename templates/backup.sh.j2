@@ -43,8 +43,12 @@ duplicity \
   --log-file ${LOGFILE} \
   cleanup --force dpbx://${DROPBOX_DIR}
 
-unset DPBX_ACCESS_TOKEN
-unset DPBX_APP_KEY
-unset DPBC_APP_SECRET
-unset GPG_KEY
-unset PASSPHRASE
+function finish {
+  unset DPBX_ACCESS_TOKEN
+  unset DPBX_APP_KEY
+  unset DPBC_APP_SECRET
+  unset GPG_KEY
+  unset PASSPHRASE
+}
+
+trap finish EXIT
