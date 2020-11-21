@@ -6,6 +6,7 @@
   when:
     - duplicity_backup_create_gpg_keypair is defined
     - duplicity_backup_create_gpg_keypair == "True"
+  no_log: True # includes secrets
   tags: duplicity_backup_create_gpg_keypair
 
 - name: Create duplicity directory
@@ -24,7 +25,7 @@
     owner: "{{ user | default(ansible_user) }}"
     group: "{{ user | default(ansible_user) }}"
     mode: '0600'
-  no_log: true
+  no_log: True # includes secrets
   tags: duplicity_backup_define_environment_variables
 
 - name: Create log directory
