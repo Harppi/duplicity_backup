@@ -7,43 +7,38 @@ set -e
 # Treat unset variables as an error when substituting
 set -u
 
-# Script configuration
-LOGFILE="/var/log/duplicity/duplicity_backup.log"
-source "/home/harppi/.duplicity/.env_variables.conf"
+# Source environment variables
+source {{ duplicity_basepath | default(ansible_env.PWD) }}/.duplicity/.env_variables.conf
 
-# Dropbox configuration
-DROPBOX_DIR="duplicity_backup"
-
-# Directories to backup
-DOCUMENTS="/home/harppi/Documents/"
-MUSIC="/home/harppi/Music/"
-PICTURES="/home/harppi/Pictures/"
-
-# Backup
+{% for dir in backup_map %}
+# Backup {{ dir.src }}
 duplicity \
   --verbosity info \
   --encrypt-sign-key="$GPG_KEY" \
-  --full-if-older-than {{ limit_full }} \
-  --log-file ${LOGFILE} \
-  --include=${DOCUMENTS} \
-  --include=${MUSIC} \
-  --include=${PICTURES} \
+  --full-if-older-than {{ dir.limit_full }} \
+  --log-file {{ log_file }} \
+  --include={{ dir.src }} \
   --exclude '**' / \
-  dpbx://${DROPBOX_DIR}
+  dpbx://{{ dir.dest }}
 
-# Remove files older than {{ limit_retention }} from Dropbox
+# Remove files older than {{ dir.limit_retention }} from dpbx://{{ dir.dest }}
 [[ $? = 0 ]] && { # if file transfer succeeds
   duplicity \
   --verbosity info \
   --log-file ${LOGFILE} \
-  remove-older-than {{ limit_retention }} --force dpbx://${DROPBOX_DIR}
+  remove-older-than {{ limit_retention }} --force dpbx://{{ dir.dest }}
 }
 
+{% endfor %}
+
 # Cleanup failures
+{% for dir in backup_map %}
 duplicity \
   --verbosity info \
-  --log-file ${LOGFILE} \
-  cleanup --force dpbx://${DROPBOX_DIR}
+  --log-file {{ log_file }} \
+  cleanup --force dpbx://{{ dir.dest }}
+
+{% endfor %}
 
 function finish {
   unset DPBX_ACCESS_TOKEN
