@@ -1,4 +1,8 @@
 ---
+- name: Include vars
+  include_vars: user_config.yml
+  tags: duplicity_backup_deploy_backup_script
+
 - name: Create GPG keypair
   script: templates/gpg.sh.j2
   become: yes
