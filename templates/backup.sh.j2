@@ -26,7 +26,7 @@ duplicity \
   duplicity \
   --verbosity info \
   --log-file ${LOGFILE} \
-  remove-older-than {{ limit_retention }} --force dpbx://{{ dir.dest }}
+  remove-older-than {{ dir.limit_retention }} --force dpbx://{{ dir.dest }}
 }
 
 {% endfor %}
