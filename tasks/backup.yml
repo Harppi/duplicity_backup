@@ -1,8 +1,4 @@
 ---
-- name: Include vars
-  include_vars: user_config.yml
-  tags: duplicity_backup_deploy_backup_script
-
 - name: Create GPG keypair
   script: templates/gpg.sh.j2
   become: yes
@@ -41,12 +37,17 @@
     mode: '0700'
   tags: duplicity_backup_create_log_directory
 
-- name: Deploy backup script
-  template:
-    src: backup.sh.j2
-    dest: "{{ duplicity_basepath | default(ansible_env.PWD) }}/.duplicity/.backup.sh"
-    owner: "{{ user | default(ansible_user) }}"
-    group: "{{ user | default(ansible_user) }}"
-    mode: '0700'
+- name: Deploy backup script according to user configuration
+  block:
+  - name: Include vars
+    include_vars: user_config.yml
+
+  - name: Deploy backup script
+    template:
+      src: backup.sh.j2
+      dest: "{{ duplicity_basepath | default(ansible_env.PWD) }}/.duplicity/.backup.sh"
+      owner: "{{ user | default(ansible_user) }}"
+      group: "{{ user | default(ansible_user) }}"
+      mode: '0700'
   tags: duplicity_backup_deploy_backup_script
 ...
