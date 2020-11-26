@@ -21,13 +21,13 @@ The duplicity_backup Ansible role configures a backup script that creates encryp
 
 ### Environment
 
-* DPBX_ACCESS_TOKEN - Dropbox access token that the script provides when a user executes it for the first time
-* DPBX_APP_KEY - Dropbox app key that is specific to the owner of a Dropbox app
-* DPBX_APP_SECRET - Dropbox app secret that is specific to the owner of a Dropbox app
+* `DPBX_ACCESS_TOKEN` - Dropbox access token that the script provides when a user executes it for the first time
+* `DPBX_APP_KEY` - Dropbox app key that is specific to the owner of a Dropbox app
+* `DPBX_APP_SECRET` - Dropbox app secret that is specific to the owner of a Dropbox app
 * GPG_EMAIL - an email address that is associated with a GPG key
-* GPG_KEY - the ID of the GPG pubring that this role creates
-* GPG_NAME - the name of the user associated with a GPG key
-* PASSPHRASE - a passphrase that protects the primary and subordinate GPG private keys
+* `GPG_KEY` - the ID of the GPG pubring that this role creates
+* `GPG_NAME` - the name of the user associated with a GPG key
+* `PASSPHRASE` - a passphrase that protects the primary and subordinate GPG private keys
 
 ## Getting started
 
