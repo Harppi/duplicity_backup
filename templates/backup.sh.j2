@@ -25,7 +25,7 @@ duplicity \
 [[ $? = 0 ]] && { # if file transfer succeeds
   duplicity \
   --verbosity info \
-  --log-file ${LOGFILE} \
+  --log-file {{ log_file }} \
   remove-older-than {{ dir.limit_retention }} --force dpbx://{{ dir.dest }}
 }
 
