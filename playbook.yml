@@ -1,7 +1,0 @@
----
-- name: Install and configure Duplicity backups
-  hosts: hyppytorni
-  become: yes
-  roles:
-    - duplicity_backup
-...
