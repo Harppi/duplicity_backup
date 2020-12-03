@@ -21,15 +21,23 @@ The duplicity_backup Ansible role configures a backup script that creates encryp
 
 ### Environment
 
-* `DPBX_ACCESS_TOKEN` - Dropbox access token that the script provides when a user executes it for the first time
+* `DPBX_ACCESS_TOKEN` - Dropbox access token that the script provides when a user executes the script for the first time
 * `DPBX_APP_KEY` - Dropbox app key that is specific to the owner of a Dropbox app
 * `DPBX_APP_SECRET` - Dropbox app secret that is specific to the owner of a Dropbox app
-* GPG_EMAIL - an email address that is associated with a GPG key
+* `GPG_EMAIL` - an email address that is associated with a GPG key
 * `GPG_KEY` - the ID of the GPG pubring that this role creates
 * `GPG_NAME` - the name of the user associated with a GPG key
 * `PASSPHRASE` - a passphrase that protects the primary and subordinate GPG private keys
 
 ## Getting started
+
+The configuration of the script splits into two parts - creating a Dropbox application and defining user specific settings. Then navigate to the Permissions tab of the app and tick the `files.metadata.write`, `files.content.write` and `files.content.read` checkboxes.
+
+### Creating a Dropbox application
+
+Navigate to Dropbox App console and create a new app. Choose `Scoped access` as the API, `App folder` as the type of access and name the app.
+
+### Defining user specific settings
 
 Create a file called `vars/user_config.yml` and define a personal backup configuration. The file should include a map structure as follows:
 
@@ -61,7 +69,7 @@ export PASSPHRASE="..."
 Now the role can be deployed against a targeted host:
 
 ```
-ansible-playbook playbook.yml -e duplicity_backup_create_gpg_keypair=True
+ansible-playbook path/to/playbook.yml -e duplicity_backup_create_gpg_keypair=True
 ```
 
 When the script is executed for the first time, a wizard instructs the user to configure access to a personal Dropbox app. Once the wizard finishes, export the missing environment variables:
@@ -74,12 +82,9 @@ export GPG_KEY="..."
 Finally, deploy the missing environment variables:
 
 ```
-ansible-playbook playbook.yml -t duplicity_backup_define_environment_variables
+ansible-playbook path/to/playbook.yml -t duplicity_backup_define_environment_variables
 ```
-
-
-
 
 ## Testing
 
-## Authors and license
+## License
