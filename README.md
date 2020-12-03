@@ -5,8 +5,10 @@
     1. [Ansible](#ansible)
     2. [Environment](#environment)
 3. [Getting started](#getting-started)
+    1. Creating a Dropbox app
+    2. Defining user specific settings
 4. [Testing](#testing)
-5. [Authors and license](#authors-and-license)
+5. [License](#authors-and-license)
 
 The duplicity_backup Ansible role configures a backup script that creates encrypted backups according to a user-defined configuration. The script is based on Duplicity and uses GPG keypairs for encryption.
 
@@ -33,7 +35,7 @@ The duplicity_backup Ansible role configures a backup script that creates encryp
 
 The configuration of the script splits into two parts - creating a Dropbox application and defining user specific settings. Then navigate to the Permissions tab of the app and tick the `files.metadata.write`, `files.content.write` and `files.content.read` checkboxes.
 
-### Creating a Dropbox application
+### Creating a Dropbox app
 
 Navigate to Dropbox App console and create a new app. Choose `Scoped access` as the API, `App folder` as the type of access and name the app.
 
