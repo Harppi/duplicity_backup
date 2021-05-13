@@ -1,0 +1,35 @@
+{{ ansible_managed | comment }}
+
+#!/bin/bash
+
+PATH=/usr/local/bin:/usr/bin:/bin
+
+# Exit on error
+set -e
+# Treat unset variables as an error when substituting
+set -u
+
+# Check if
+
+# Source environment variables
+source {{ duplicity_basepath | default(ansible_env.PWD) }}/.duplicity/.env_variables.conf
+
+src_dir=$1
+dest_dir=$2
+
+# Restore a backup
+duplicity restore \
+  --verbosity info \
+  --encrypt-sign-key="$GPG_KEY" \
+  --log-file {{ log_file }}
+  dpbx://$src_dir $dest_dir
+
+function finish {
+  unset DPBX_ACCESS_TOKEN
+  unset DPBX_APP_KEY
+  unset DPBC_APP_SECRET
+  unset GPG_KEY
+  unset PASSPHRASE
+}
+
+trap finish EXIT

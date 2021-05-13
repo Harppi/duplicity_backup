@@ -68,10 +68,12 @@ export GPG_NAME="..."
 export PASSPHRASE="..."
 ```
 
+### Deploying backup and restoration scripts
+
 Now the role can be deployed against a targeted host:
 
 ```
-ansible-playbook path/to/playbook.yml -e duplicity_backup_create_gpg_keypair=True
+ansible-playbook path/to/playbook.yml -e duplicity_backup_create_gpg_keypair=True -e ansible_python_interpreter=/usr/bin/python3
 ```
 
 When the script is executed for the first time, a wizard instructs the user to configure access to a personal Dropbox app. Once the wizard finishes, export the missing environment variables:
@@ -81,11 +83,36 @@ export DPBX_ACCESS_TOKEN="..."
 export GPG_KEY="..."
 ```
 
+One can output GPG_KEY, i.e. the public key, as follows:
+
+```
+alice% gpg --list-keys
+/users/alice/.gnupg/pubring.gpg
+---------------------------------------
+pub  1024D/BB7576AC 1999-06-04 Alice (Judge) <alice@cyb.org>
+sub  1024g/78E9A8FA 1999-06-04
+```
+
+```
+gpg --list-keys
+```
+
+
 Finally, deploy the missing environment variables:
 
 ```
 ansible-playbook path/to/playbook.yml -t duplicity_backup_define_environment_variables
 ```
+
+### Restoring a backup
+
+Copy an existing GPG key pair to an arbitrary directory, define the path to the directory and deploy the role against a targeted host:
+
+ ```
+ ansible-playbook path/to/playbook.yml -e gpg_key_path=path/to/gpg_key_pair
+ ```
+
+The role deploys the restoration script to `/home/user/.duplicity/restore.sh` where `user` equals to `REMOTE_USER`. The user can be defined by using option `-u` or `--user`.
 
 ## Testing
 
