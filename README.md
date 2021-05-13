@@ -3,14 +3,16 @@
 1. [Duplicity_backup_script](#duplicity-backup-script)
 2. [Variables](#variables)
     1. [Ansible](#ansible)
-    2. [Environment](#environment)
+    2. [Environment variables](#environment-variables)
 3. [Getting started](#getting-started)
-    1. Creating a Dropbox app
-    2. Defining user specific settings
-4. [Testing](#testing)
-5. [License](#authors-and-license)
+    1. [Creating a Dropbox app](#creating-a-dropbox-app)
+    2. [Defining user specific settings](#defining-user-specific-settings)
+4. [Deploying the backup script](#deploying-the-backup-script)
+5. [Restoring a backup](#restoring-a-backup)
+6. [Testing](#testing)
+7. [License](#authors-and-license)
 
-The duplicity_backup Ansible role configures a backup script that creates encrypted backups according to a user-defined configuration. The script is based on Duplicity and uses GPG keypairs for encryption.
+The `duplicity_backup` Ansible role configures a backup script that creates encrypted backups according to a user-defined configuration. The script is based on Duplicity and uses GPG keypairs for encryption.
 
 ## Variables
 
@@ -21,7 +23,7 @@ The duplicity_backup Ansible role configures a backup script that creates encryp
 * `log_file` - controls the `--log-file` parameter and defines which file Duplicity writes logs to
 * `user` - defines the user to whom the script creates a GPG keypair and to whose home directory this role deploys the backup script
 
-### Environment
+### Environment variables
 
 * `DPBX_ACCESS_TOKEN` - Dropbox access token that the script provides when a user executes the script for the first time
 * `DPBX_APP_KEY` - Dropbox app key that is specific to the owner of a Dropbox app
@@ -33,11 +35,11 @@ The duplicity_backup Ansible role configures a backup script that creates encryp
 
 ## Getting started
 
-The configuration of the script splits into two parts - creating a Dropbox application and defining user specific settings. Then navigate to the Permissions tab of the app and tick the `files.metadata.write`, `files.content.write` and `files.content.read` checkboxes.
+The configuration of the script splits into two parts - creating a Dropbox application and defining user specific settings.
 
 ### Creating a Dropbox app
 
-Navigate to Dropbox App console and create a new app. Choose `Scoped access` as the API, `App folder` as the type of access and name the app.
+Navigate to Dropbox App console and create a new app. Choose `Scoped access` as the API, `App folder` as the type of access and name the app. Then navigate to the Permissions tab of the app and tick the `files.metadata.write`, `files.content.write` and `files.content.read` checkboxes.
 
 ### Defining user specific settings
 
@@ -58,7 +60,7 @@ backup_map:
 
 The map structure may include as many sources as necessary. The parameter `src` defines the local path from which Duplicity uploads backups to a directory called `dest` within a Dropbox app. Parameters `limit_full` and `limit_retention` may be configured for each source individually.
 
-Then export the known environment variables:
+Then export the known environment variables. Dropbox app key and app secret can be copied from Dropbox App Console, and GPG email, name and passphrase can be defined to one's liking.
 
 ```
 export DPBX_APP_KEY="..."
@@ -68,9 +70,9 @@ export GPG_NAME="..."
 export PASSPHRASE="..."
 ```
 
-### Deploying backup and restoration scripts
+## Deploying the backup script
 
-Now the role can be deployed against a targeted host:
+Deploy the role against a targeted host:
 
 ```
 ansible-playbook path/to/playbook.yml -e duplicity_backup_create_gpg_keypair=True -e ansible_python_interpreter=/usr/bin/python3
@@ -83,7 +85,7 @@ export DPBX_ACCESS_TOKEN="..."
 export GPG_KEY="..."
 ```
 
-One can output GPG_KEY, i.e. the public key, as follows:
+`GPG_KEY`, i.e. the public key, can be shown as follows:
 
 ```
 alice% gpg --list-keys
@@ -98,13 +100,15 @@ gpg --list-keys
 ```
 
 
-Finally, deploy the missing environment variables:
+Finally, re-deploy the configuration file that includes the environment variables:
 
 ```
 ansible-playbook path/to/playbook.yml -t duplicity_backup_define_environment_variables
 ```
 
-### Restoring a backup
+The backup script reads these variables in order to encrypt backups and authenticate against Dropbox. Store the GPG keypair in a secure place to be able to restore and decrypt existing backups in case of a system failure. 
+
+## Restoring a backup
 
 Copy an existing GPG key pair to an arbitrary directory, define the path to the directory and deploy the role against a targeted host:
 
@@ -113,6 +117,14 @@ Copy an existing GPG key pair to an arbitrary directory, define the path to the 
  ```
 
 The role deploys the restoration script to `/home/user/.duplicity/restore.sh` where `user` equals to `REMOTE_USER`. The user can be defined by using option `-u` or `--user`.
+
+Restore a backup executing the restoration script:
+
+```
+./restore.sh <source> <destination>
+```
+
+where `source` is the name of a directory within a Dropbox app that will be restored and `destination` is the local directory to which the script restores the contents of the directory.
 
 ## Testing
 
