@@ -95,10 +95,6 @@ pub  1024D/BB7576AC 1999-06-04 Alice (Judge) <alice@cyb.org>
 sub  1024g/78E9A8FA 1999-06-04
 ```
 
-```
-gpg --list-keys
-```
-
 
 Finally, re-deploy the configuration file that includes the environment variables:
 
@@ -106,7 +102,7 @@ Finally, re-deploy the configuration file that includes the environment variable
 ansible-playbook path/to/playbook.yml -t duplicity_backup_define_environment_variables
 ```
 
-The backup script reads these variables in order to encrypt backups and authenticate against Dropbox. Store the GPG keypair in a secure place to be able to restore and decrypt existing backups in case of a system failure. 
+The backup script reads these variables in order to encrypt backups and authenticate against Dropbox. Store the GPG keypair in a secure place to be able to restore and decrypt existing backups in case of a system failure.
 
 ## Restoring a backup
 
