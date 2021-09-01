@@ -1,15 +1,15 @@
 ---
 - name: Create GPG keypair
   script: templates/gpg.sh.j2
-  become: yes
+  become: true
   become_user: "{{ user | default(ansible_user) }}"
   when:
     - duplicity_backup_create_gpg_keypair is defined
     - duplicity_backup_create_gpg_keypair|bool
-  no_log: true # includes secrets
+  no_log: true  # includes secrets
   tags: duplicity_backup_create_gpg_keypair
 
-- name: Deploy existing GPG keypair # required for restoring a backup
+- name: Deploy existing GPG keypair  # required for restoring a backup
   block:
 
     - name: Deploy private keys
@@ -57,7 +57,7 @@
         - .gnupg/openpgp-revocs.d
 
   when: gpg_key_path is defined
-  no_log: true # includes secrets
+  no_log: true  # includes secrets
   tags: duplicity_backup_deploy_gpg_keypair
 
 - name: Create duplicity directory
@@ -76,7 +76,7 @@
     owner: "{{ user | default(ansible_user) }}"
     group: "{{ user | default(ansible_user) }}"
     mode: '0600'
-  no_log: true # includes secrets
+  no_log: true  # includes secrets
   tags: duplicity_backup_define_environment_variables
 
 - name: Create log directory
@@ -90,19 +90,19 @@
 
 - name: Deploy backup script according to user configuration
   block:
-  - name: Include vars
-    include_vars: user_config.yml
+    - name: Include vars
+      include_vars: user_config.yml
 
-  - name: Deploy backup and restoration scripts
-    template:
-      src: "{{ item }}.j2"
-      dest: "{{ duplicity_basepath | default(ansible_env.PWD) }}/.duplicity/.{{ item }}"
-      owner: "{{ user | default(ansible_user) }}"
-      group: "{{ user | default(ansible_user) }}"
-      mode: '0700'
-    loop:
-      - backup.sh
-      - restore.sh
+    - name: Deploy backup and restoration scripts
+      template:
+        src: "{{ item }}.j2"
+        dest: "{{ duplicity_basepath | default(ansible_env.PWD) }}/.duplicity/.{{ item }}"
+        owner: "{{ user | default(ansible_user) }}"
+        group: "{{ user | default(ansible_user) }}"
+        mode: '0700'
+      loop:
+        - backup.sh
+        - restore.sh
   tags: duplicity_backup_deploy_backup_script
 
 ...
