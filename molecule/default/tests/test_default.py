@@ -27,6 +27,9 @@ def test_pip_prerequisites(host, name):
     assert name in pkgs
 
 # Ensure GPG keypair exists
+def test_gpg_keypair(host):
+    cmd = host.run("gpg --list-keys | grep root@root.com")
+    assert cmd.succeeded == True
 
 @pytest.mark.parametrize("gpg_dir_permissions", [
     ("/root/.gnupg/"),
