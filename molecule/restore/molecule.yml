@@ -1,0 +1,31 @@
+---
+dependency:
+  name: galaxy
+  options:
+    role-file: meta/requirements.yml
+driver:
+  name: docker
+lint: |
+  set -e
+  yamllint .
+  flake8 .
+  ansible-lint .
+platforms:
+  - name: debian_buster
+    ansible_groups:
+      - root
+    image: debian:10
+    privileged: true
+    pre_build_image: false
+provisioner:
+  name: ansible
+  inventory:
+    group_vars:
+      all:
+        ansible_python_interpreter: /usr/bin/python3
+        ansible_user: root
+        duplicity_basepath: /root
+        gpg_key_path: "{{ role_path }}/files/gnupg"
+verifier:
+  name: testinfra
+...
