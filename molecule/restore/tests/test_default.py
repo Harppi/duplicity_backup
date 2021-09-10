@@ -71,3 +71,18 @@ def test_duplicity_permissions(host, duplicity_dirs):
     assert env_var_conf.user == "root"
     assert env_var_conf.group == "root"
     assert env_var_conf.mode == 0o600
+
+
+# Test if .env_variables.conf includes correct values
+
+@pytest.mark.parametrize("value", [
+    ('export DPBX_ACCESS_TOKEN="test_token"'),
+    ('export DPBX_APP_KEY="test_key"'),
+    ('export DPBX_APP_SECRET="test_secret"'),
+    ('export GPG_KEY=""'),
+    ('export PASSPHRASE="test_passphrase"')
+])
+
+def test_env_var_values(host, value):
+    env_var_conf = host.file("/.duplicity/.env_variables.conf")
+    assert env_var_conf.contains(value)
