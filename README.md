@@ -108,9 +108,9 @@ The backup script reads these variables in order to encrypt backups and authenti
 
 Copy an existing GPG key pair to an arbitrary directory, define the path to the directory and deploy the role against a targeted host:
 
- ```
- ansible-playbook path/to/playbook.yml -e gpg_key_path=path/to/gpg_key_pair
- ```
+```
+ansible-playbook path/to/playbook.yml -e gpg_key_path=path/to/gpg_key_pair
+```
 
 The role deploys the restoration script to `/home/user/.duplicity/restore.sh` where `user` equals to `REMOTE_USER`. The user can be defined by using option `-u` or `--user`.
 
@@ -123,5 +123,40 @@ Restore a backup executing the restoration script:
 where `source` is the name of a directory within a Dropbox app that will be restored and `destination` is the local directory to which the script restores the contents of the directory.
 
 ## Testing
+
+Navigate into the root directory of the role and execute one of the following.
+
+Converge the default instance and configure a brand new backup setup:
+
+```
+molecule converge
+```
+
+Converge a restoration instance, configure a backup setup and restore an
+existing GPG keypair:
+
+Investigate the internals of a Docker container or a Vagrant box:
+
+```
+molecule login
+```
+
+Run verification tests for a brand new backup setup:
+
+```
+molecule verify
+```
+
+Run verification tests for a restored backup setup:
+
+```
+molecule verify --scenario-name restore
+```
+
+Destroy instances:
+
+```
+molecule destroy
+```
 
 ## License
