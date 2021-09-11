@@ -1,0 +1,3 @@
+vars/user_config.yml
+molecule/default/tests/__pycache__/
+molecule/restore/tests/__pycache__/

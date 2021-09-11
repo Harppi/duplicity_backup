@@ -1,0 +1,108 @@
+---
+- name: Create GPG keypair
+  script: templates/gpg.sh.j2
+  become: true
+  become_user: "{{ user | default(ansible_user) }}"
+  when:
+    - duplicity_backup_create_gpg_keypair is defined
+    - duplicity_backup_create_gpg_keypair|bool
+  no_log: true  # includes secrets
+  tags: duplicity_backup_create_gpg_keypair
+
+- name: Deploy existing GPG keypair  # required for restoring a backup
+  block:
+
+    - name: Deploy private keys
+      copy:
+        src: "{{ gpg_key_path }}/private-keys-v1.d/"
+        dest: "{{ duplicity_basepath | default(ansible_env.PWD) }}/.gnupg/private-keys-v1.d/"
+        owner: "{{ user | default(ansible_user) }}"
+        group: "{{ user | default(ansible_user) }}"
+        mode: '0600'
+
+    - name: Deploy public keys
+      copy:
+        src: "{{ gpg_key_path }}/pubring.kbx"
+        dest: "{{ duplicity_basepath | default(ansible_env.PWD) }}/.gnupg/"
+        owner: "{{ user | default(ansible_user) }}"
+        group: "{{ user | default(ansible_user) }}"
+        mode: '0644'
+
+    - name: Deploy trust database
+      copy:
+        src: "{{ gpg_key_path }}/trustdb.gpg"
+        dest: "{{ duplicity_basepath | default(ansible_env.PWD) }}/.gnupg/"
+        owner: "{{ user | default(ansible_user) }}"
+        group: "{{ user | default(ansible_user) }}"
+        mode: '0600'
+
+    - name: Deploy revocation key
+      copy:
+        src: "{{ gpg_key_path }}/openpgp-revocs.d/"
+        dest: "{{ duplicity_basepath | default(ansible_env.PWD) }}/.gnupg/openpgp-revocs.d/"
+        owner: "{{ user | default(ansible_user) }}"
+        group: "{{ user | default(ansible_user) }}"
+        mode: '0600'
+
+    - name: Set directory permissions
+      file:
+        path: "{{ duplicity_basepath | default(ansible_env.PWD) }}/{{ item }}"
+        state: directory
+        owner: "{{ user | default(ansible_user) }}"
+        group: "{{ user | default(ansible_user) }}"
+        mode: '0700'
+      loop:
+        - .gnupg
+        - .gnupg/private-keys-v1.d
+        - .gnupg/openpgp-revocs.d
+
+  when: gpg_key_path is defined
+  no_log: true  # includes secrets
+  tags: duplicity_backup_deploy_gpg_keypair
+
+- name: Create duplicity directory
+  file:
+    path: "{{ duplicity_basepath | default(ansible_env.PWD) }}/.duplicity"
+    state: directory
+    owner: "{{ user | default(ansible_user) }}"
+    group: "{{ user | default(ansible_user) }}"
+    mode: '0700'
+  tags: duplicity_backup_define_environment_variables
+
+- name: Define environment variables
+  template:
+    src: env_variables.conf.j2
+    dest: "{{ duplicity_basepath | default(ansible_env.PWD) }}/.duplicity/.env_variables.conf"
+    owner: "{{ user | default(ansible_user) }}"
+    group: "{{ user | default(ansible_user) }}"
+    mode: '0600'
+  no_log: true  # includes secrets
+  tags: duplicity_backup_define_environment_variables
+
+- name: Create log directory
+  file:
+    path: /var/log/duplicity
+    state: directory
+    owner: "{{ user | default(ansible_user) }}"
+    group: "{{ user | default(ansible_user) }}"
+    mode: '0700'
+  tags: duplicity_backup_create_log_directory
+
+- name: Deploy backup script according to user configuration
+  block:
+    - name: Include vars
+      include_vars: user_config.yml
+
+    - name: Deploy backup and restoration scripts
+      template:
+        src: "{{ item }}.j2"
+        dest: "{{ duplicity_basepath | default(ansible_env.PWD) }}/.duplicity/.{{ item }}"
+        owner: "{{ user | default(ansible_user) }}"
+        group: "{{ user | default(ansible_user) }}"
+        mode: '0700'
+      loop:
+        - backup.sh
+        - restore.sh
+  tags: duplicity_backup_deploy_backup_script
+
+...

@@ -25,7 +25,6 @@
     name: duplicity
     state: latest
     executable: pip3
-
   tags: duplicity_backup_install_duplicity
 
 - name: Install haveged
@@ -33,4 +32,11 @@
     name: haveged
     state: latest
   tags: duplicity_backup_install_haveged
+
+- name: Install dropbox
+  pip:
+    name: dropbox
+    state: latest
+    executable: pip3
+  tags: duplicity_backup_install_dropbox
 ...

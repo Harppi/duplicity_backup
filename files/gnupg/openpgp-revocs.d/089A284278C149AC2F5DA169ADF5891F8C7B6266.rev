@@ -1,0 +1,37 @@
+This is a revocation certificate for the OpenPGP key:
+
+pub   rsa4096 2021-09-09 [SC]
+      089A284278C149AC2F5DA169ADF5891F8C7B6266
+uid          restore <restore@root.com>
+
+A revocation certificate is a kind of "kill switch" to publicly
+declare that a key shall not anymore be used.  It is not possible
+to retract such a revocation certificate once it has been published.
+
+Use it to revoke this key in case of a compromise or loss of
+the secret key.  However, if the secret key is still accessible,
+it is better to generate a new revocation certificate and give
+a reason for the revocation.  For details see the description of
+of the gpg command "--generate-revocation" in the GnuPG manual.
+
+To avoid an accidental use of this file, a colon has been inserted
+before the 5 dashes below.  Remove this colon with a text editor
+before importing and publishing this revocation certificate.
+
+:-----BEGIN PGP PUBLIC KEY BLOCK-----
+Comment: This is a revocation certificate
+
+iQI2BCABCgAgFiEECJooQnjBSawvXaFprfWJH4x7YmYFAmE51RQCHQAACgkQrfWJ
+H4x7YmbjOg/6A/7AIHrrbwca3X1k4UVGeWPO12KxscsbXlvBDofkoNWik0QpBEa4
+FbU2I0vCreTohDJ5Rv3UKLg2j/xyznu0mdYRkNzqb93gduRi4vX1NivUW/CEW/Im
+tYS3d3kZQ/gunLDibf1RXBjD11cbChyTK7peQ6lQvUiuLs7lMZ5OPdFd0GBoP+CJ
+h9ywU7dJJhpTM9vcOGXHpWHjdThKYO+imA+NMcaGsTsOi6h9wJSXtH54HlpQ9Mgd
+lhOK7A+phpHZ8VKP+cu72TIdPH9GNXuuuTlYFFqhWT3f8mkIK12U8nCDYM0T+ndW
+9wlgwQ8/zDOrCBU1FgCvDokAPKK3/O8wGQH+Ri2nbZfT769zVyHGEfNZdsQgQdxK
+3FswEd6NAyxxvlOiJtcJXADgscIT/rH64Aqplnm6Pq3Nrt9NGmd72fj+oYZJyO5l
+8MCsh0BMnUWHRgiKl14CmcwQHyoFIJmgE3O3xkG8AcjZromUINNYxfUHCEvGsU/x
+xeiabfJs8N5MkpGsUQ/k/KJ/zJPq2wzjqUu4A0GED9udnBqcfhVw0OE6nHUaOVuR
+/tmQrA6gM0dHN/KefkhqwE/ReKiBIRqroQYvD6jdDC/t+U22VqUEauQtdfiOukOE
+KlmRRr+NeA2cj6HepPJDsii48J4qcRx8oG4fQzehyHX41aXFO0MjAcU=
+=OdBN
+-----END PGP PUBLIC KEY BLOCK-----

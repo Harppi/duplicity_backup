@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Exit on error
+set -e
+# Treat unset variables as an error when substituting
+set -u
+
+# Look for input from tty
+export GPG_TTY=$(tty)
+
+gpg --batch --gen-key <<EOF
+  Key-Type: RSA
+  Key-Length: 4096
+  Key-Usage: cert,sign
+  Subkey-Type: RSA
+  Subkey-Length: 4096
+  Subkey-Usage: encrypt
+  Name-Real: $GPG_NAME
+  Name-Email: $GPG_EMAIL
+  Expire-Date: 0
+  Passphrase: $PASSPHRASE
+EOF

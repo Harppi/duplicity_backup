@@ -1,0 +1,10 @@
+---
+- name: Converge
+  hosts: all
+  roles:
+    - role: duplicity_backup
+  environment: # used by templates/gpg.sh.j2
+    GPG_NAME: "root"
+    GPG_EMAIL: "root@root.com"
+    PASSPHRASE: test_passphrase
+...

@@ -1,0 +1,5 @@
+---
+limit_full: 7D
+limit_retention: 14D
+log_file: /var/log/duplicity/duplicity_backup.log
+...
