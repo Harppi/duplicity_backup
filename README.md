@@ -124,7 +124,7 @@ where `source` is the name of a directory within a Dropbox app that will be rest
 
 ## Testing
 
-Navigate into the root directory of the role and execute one of the following.
+Testing requires Docker to be installed and running. Navigate into the root directory of the role and execute one of the following.
 
 Converge the default instance and configure a brand new backup setup:
 
@@ -135,7 +135,11 @@ molecule converge
 Converge a restoration instance, configure a backup setup and restore an
 existing GPG keypair:
 
-Investigate the internals of a Docker container or a Vagrant box:
+```
+molecule converge --scenario-name restore
+```
+
+Investigate the internals of a Docker container:
 
 ```
 molecule login
@@ -160,3 +164,5 @@ molecule destroy
 ```
 
 ## License
+
+MIT
