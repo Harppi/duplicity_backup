@@ -53,7 +53,7 @@ backup_map:
     limit_retention: 14D
 
   - src: "/home/{{ user | default(ansible_user) }}/Music"
-    dest: Documents
+    dest: Music
     limit_full: 30D
     limit_retention: 60D
 ```
