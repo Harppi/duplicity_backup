@@ -5,11 +5,6 @@ dependency:
     role-file: meta/requirements.yml
 driver:
   name: docker
-lint: |
-  set -e
-  yamllint .
-  flake8 .
-  ansible-lint .
 platforms:
   - name: debian_buster
     ansible_groups:
@@ -26,6 +21,11 @@ provisioner:
         ansible_user: root
         duplicity_basepath: /root
         gpg_key_path: "{{ role_path }}/files/gnupg"
+  env:
+    DPBX_ACCESS_TOKEN: test_token
+    DPBX_APP_KEY: test_key
+    DPBX_APP_SECRET: test_secret
+    PASSPHRASE: test_passphrase
 verifier:
   name: testinfra
 ...
