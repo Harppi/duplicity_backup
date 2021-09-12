@@ -1,0 +1,9 @@
+# keep 30 daily log files that are compressed
+
+/var/log/duplicity/duplicity_backup.log {
+  rotate 30
+  daily
+  compress
+  missingok
+  notifempty
+}

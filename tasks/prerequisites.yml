@@ -39,4 +39,10 @@
     state: latest
     executable: pip3
   tags: duplicity_backup_install_dropbox
+
+- name: Install logrotate
+  apt:
+    name: logrotate
+    state: latest
+  tags: duplicity_backup_install_logrotate
 ...

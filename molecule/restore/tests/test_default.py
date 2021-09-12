@@ -51,7 +51,8 @@ def test_gpg_permissions(host, gpg_dir):
     assert gpg_dir.mode == 0o700
 
 
-# Test if duplicity directories exist and if their permissions are correct
+# Test if duplicity directories and files exist and if their permissions are
+# correct
 @pytest.mark.parametrize("duplicity_dirs", [
     ("/.duplicity"),
     ("/.duplicity/.backup.sh"),
@@ -73,9 +74,30 @@ def test_duplicity_permissions(host, duplicity_dirs):
     assert env_var_conf.mode == 0o600
 
 
+@pytest.mark.parametrize("line", [
+    ("/var/log/duplicity/duplicity_backup.log"),
+    ("rotate 30"),
+    ("daily"),
+    ("compress"),
+    ("missingok"),
+    ("notifempty")
+])
+
+def test_log_rotation(host, line):
+    log_rotation_conf = host.file("/etc/logrotate.d/duplicity")
+    assert log_rotation_conf.exists
+    assert log_rotation_conf.user == "root"
+    assert log_rotation_conf.group == "root"
+    assert log_rotation_conf.mode == 0o644
+    assert log_rotation_conf.contains(line)
+
+    cmd = host.run("logrotate -vf /etc/logrotate.d/duplicity")
+    assert cmd.succeeded == True
+
+
 # Test if .env_variables.conf includes correct values
 
-@pytest.mark.parametrize("value", [
+@pytest.mark.parametrize("line", [
     ('export DPBX_ACCESS_TOKEN="test_token"'),
     ('export DPBX_APP_KEY="test_key"'),
     ('export DPBX_APP_SECRET="test_secret"'),
@@ -83,6 +105,6 @@ def test_duplicity_permissions(host, duplicity_dirs):
     ('export PASSPHRASE="test_passphrase"')
 ])
 
-def test_env_var_values(host, value):
+def test_env_var_values(host, line):
     env_var_conf = host.file("/.duplicity/.env_variables.conf")
-    assert env_var_conf.contains(value)
+    assert env_var_conf.contains(line)
