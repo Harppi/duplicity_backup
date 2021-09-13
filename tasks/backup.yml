@@ -7,7 +7,9 @@
     - duplicity_backup_create_gpg_keypair is defined
     - duplicity_backup_create_gpg_keypair|bool
   no_log: true  # includes secrets
-  tags: duplicity_backup_create_gpg_keypair
+  tags:
+    - duplicity_backup_create_gpg_keypair
+    - molecule-idempotence-notest
 
 - name: Deploy existing GPG keypair  # required for restoring a backup
   block:

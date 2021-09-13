@@ -4,7 +4,6 @@ import testinfra.utils.ansible_runner
 
 testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
     os.environ['MOLECULE_INVENTORY_FILE']).get_hosts('all')
-
 # Test if apt installed the required packages
 @pytest.mark.parametrize("package", [
     ("python3-venv"),
@@ -13,7 +12,6 @@ testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
     ("librsync-dev"),
     ("haveged"),
 ])
-
 def test_apt_prerequisites(host, package):
     pkg = host.package(package)
     assert pkg.is_installed
@@ -54,9 +52,9 @@ def test_gpg_permissions(host, gpg_dir):
 # Test if duplicity directories and files exist and if their permissions are
 # correct
 @pytest.mark.parametrize("duplicity_dirs", [
-    ("/.duplicity"),
-    ("/.duplicity/.backup.sh"),
-    ("/.duplicity/.restore.sh"),
+    ("/root/.duplicity"),
+    ("/root/.duplicity/.backup.sh"),
+    ("/root/.duplicity/.restore.sh"),
     ("/var/log/duplicity")
 ])
 
@@ -67,13 +65,14 @@ def test_duplicity_permissions(host, duplicity_dirs):
     assert duplicity_dir.group == "root"
     assert duplicity_dir.mode == 0o700
 
-    env_var_conf = host.file("/.duplicity/.env_variables.conf")
+    env_var_conf = host.file("/root/.duplicity/.env_variables.conf")
     assert env_var_conf.exists
     assert env_var_conf.user == "root"
     assert env_var_conf.group == "root"
     assert env_var_conf.mode == 0o600
 
 
+# Test if log rotation works
 @pytest.mark.parametrize("line", [
     ("/var/log/duplicity/duplicity_backup.log"),
     ("rotate 30"),
@@ -95,8 +94,7 @@ def test_log_rotation(host, line):
     assert cmd.succeeded == True
 
 
-# Test if .env_variables.conf includes correct values
-
+# Test if .env_variables.conf includes correct lines
 @pytest.mark.parametrize("line", [
     ('export DPBX_ACCESS_TOKEN="test_token"'),
     ('export DPBX_APP_KEY="test_key"'),
@@ -106,5 +104,5 @@ def test_log_rotation(host, line):
 ])
 
 def test_env_var_values(host, line):
-    env_var_conf = host.file("/.duplicity/.env_variables.conf")
+    env_var_conf = host.file("/root/.duplicity/.env_variables.conf")
     assert env_var_conf.contains(line)
