@@ -5,6 +5,11 @@ dependency:
     role-file: meta/requirements.yml
 driver:
   name: docker
+lint: |
+  set -e
+  ansible-lint .
+  yamllint .
+  flake8 .
 platforms:
   - name: debian_buster
     ansible_groups:

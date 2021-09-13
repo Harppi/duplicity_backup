@@ -124,7 +124,9 @@ where `source` is the name of a directory within a Dropbox app that will be rest
 
 ## Testing
 
-Testing requires Docker to be installed and running. Navigate into the root directory of the role and execute one of the following.
+Testing requires Docker to be installed and running and depends on
+`ansible-lint`, `yamllint` and `flake8` in order to lint YAML and Python files.
+Navigate into the root directory of the role and execute one of the following.
 
 Converge the default instance and configure a brand new backup setup:
 
@@ -155,6 +157,18 @@ Run verification tests for a restored backup setup:
 
 ```
 molecule verify --scenario-name restore
+```
+
+Run full test sequence for a brand new backup setup:
+
+```
+molecule test
+```
+
+Run full test sequence for a restored backup setup
+
+```
+molecule test --scenario-name restore
 ```
 
 Destroy instances:
