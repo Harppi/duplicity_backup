@@ -17,7 +17,8 @@
     - name: Deploy private keys
       copy:
         src: "{{ gpg_key_path }}/private-keys-v1.d/"
-        dest: "{{ duplicity_basepath | default(ansible_env.PWD) }}/.gnupg/private-keys-v1.d/"
+        dest: "{{ duplicity_basepath |
+          default(ansible_env.PWD) }}/.gnupg/private-keys-v1.d/"
         owner: "{{ user | default(ansible_user) }}"
         group: "{{ user | default(ansible_user) }}"
         mode: '0600'
@@ -41,14 +42,16 @@
     - name: Deploy revocation key
       copy:
         src: "{{ gpg_key_path }}/openpgp-revocs.d/"
-        dest: "{{ duplicity_basepath | default(ansible_env.PWD) }}/.gnupg/openpgp-revocs.d/"
+        dest: "{{ duplicity_basepath |
+          default(ansible_env.PWD) }}/.gnupg/openpgp-revocs.d/"
         owner: "{{ user | default(ansible_user) }}"
         group: "{{ user | default(ansible_user) }}"
         mode: '0600'
 
     - name: Set directory permissions
       file:
-        path: "{{ duplicity_basepath | default(ansible_env.PWD) }}/{{ item }}"
+        path: "{{ duplicity_basepath |
+          default(ansible_env.PWD) }}/{{ item }}"
         state: directory
         owner: "{{ user | default(ansible_user) }}"
         group: "{{ user | default(ansible_user) }}"
@@ -74,7 +77,8 @@
 - name: Define environment variables
   template:
     src: env_variables.conf.j2
-    dest: "{{ duplicity_basepath | default(ansible_env.PWD) }}/.duplicity/.env_variables.conf"
+    dest: "{{ duplicity_basepath |
+      default(ansible_env.PWD) }}/.duplicity/.env_variables.conf"
     owner: "{{ user | default(ansible_user) }}"
     group: "{{ user | default(ansible_user) }}"
     mode: '0600'
@@ -98,7 +102,8 @@
     - name: Deploy backup and restoration scripts
       template:
         src: "{{ item }}.j2"
-        dest: "{{ duplicity_basepath | default(ansible_env.PWD) }}/.duplicity/.{{ item }}"
+        dest: "{{ duplicity_basepath |
+          default(ansible_env.PWD) }}/.duplicity/.{{ item }}"
         owner: "{{ user | default(ansible_user) }}"
         group: "{{ user | default(ansible_user) }}"
         mode: '0700'

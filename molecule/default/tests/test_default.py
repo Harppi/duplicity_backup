@@ -5,6 +5,7 @@ import testinfra.utils.ansible_runner
 testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
     os.environ['MOLECULE_INVENTORY_FILE']).get_hosts('all')
 
+
 # Test if apt installed the required packages
 @pytest.mark.parametrize("package", [
     ("python3-venv"),
@@ -13,7 +14,6 @@ testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
     ("librsync-dev"),
     ("haveged"),
 ])
-
 def test_apt_prerequisites(host, package):
     pkg = host.package(package)
     assert pkg.is_installed
@@ -24,7 +24,6 @@ def test_apt_prerequisites(host, package):
     ("dropbox"),
     ("duplicity"),
 ])
-
 def test_pip_prerequisites(host, package):
     pkgs = host.pip.get_packages(pip_path='/usr/bin/pip3')
     assert package in pkgs
@@ -33,7 +32,7 @@ def test_pip_prerequisites(host, package):
 # Test if a certain GPG keypair exists
 def test_gpg_keypair(host):
     cmd = host.run("gpg --list-keys | grep root@root.com")
-    assert cmd.succeeded == True
+    assert cmd.succeeded is True
 
 
 # Test if GPG directories exist and if their permissions are correct
@@ -42,7 +41,6 @@ def test_gpg_keypair(host):
     ("/root/.gnupg/private-keys-v1.d/"),
     ("/root/.gnupg/openpgp-revocs.d/"),
 ])
-
 def test_gpg_permissions(host, gpg_dir):
     gpg_dir = host.file(gpg_dir)
     assert gpg_dir.exists
@@ -59,7 +57,6 @@ def test_gpg_permissions(host, gpg_dir):
     ("/root/.duplicity/.restore.sh"),
     ("/var/log/duplicity")
 ])
-
 def test_duplicity_permissions(host, duplicity_dirs):
     duplicity_dir = host.file(duplicity_dirs)
     assert duplicity_dir.exists
@@ -83,7 +80,6 @@ def test_duplicity_permissions(host, duplicity_dirs):
     ("missingok"),
     ("notifempty")
 ])
-
 def test_log_rotation(host, line):
     log_rotation_conf = host.file("/etc/logrotate.d/duplicity")
     assert log_rotation_conf.exists
@@ -93,7 +89,7 @@ def test_log_rotation(host, line):
     assert log_rotation_conf.contains(line)
 
     cmd = host.run("logrotate -vf /etc/logrotate.d/duplicity")
-    assert cmd.succeeded == True
+    assert cmd.succeeded is True
 
 
 # Test if .env_variables.conf includes correct lines
@@ -104,7 +100,6 @@ def test_log_rotation(host, line):
     ('export GPG_KEY=""'),
     ('export PASSPHRASE="test_passphrase"')
 ])
-
 def test_env_var_values(host, line):
     env_var_conf = host.file("/root/.duplicity/.env_variables.conf")
     assert env_var_conf.contains(line)
