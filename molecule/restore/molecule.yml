@@ -25,7 +25,7 @@ provisioner:
         ansible_python_interpreter: /usr/bin/python3
         ansible_user: root
         duplicity_basepath: /root
-        gpg_key_path: "{{ role_path }}/files/gnupg"
+        gpg_key_path: "{{ role_path }}/files/molecule-dummy-keys"
   env:
     DPBX_ACCESS_TOKEN: test_token
     DPBX_APP_KEY: test_key
