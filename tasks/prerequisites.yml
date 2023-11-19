@@ -27,6 +27,13 @@
     executable: pip3
   tags: duplicity_backup_install_duplicity
 
+- name: Install future
+  pip:
+    name: future
+    state: latest
+    executable: pip3
+  tags: duplicity_backup_install_future
+
 - name: Install haveged
   apt:
     name: haveged
